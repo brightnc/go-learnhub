@@ -58,3 +58,19 @@ func (svc *ContentService) GetContentById(id string) (*domain.Content, error) {
 
 	return result, nil
 }
+
+func (svc *ContentService) UpdateContent(id string, content *domain.Content) (*domain.Content, error) {
+	result, err := svc.repo.UpdateContent(id, content)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+func (svc *ContentService) DeleteContent(id string) error {
+	err := svc.repo.DeleteContent(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

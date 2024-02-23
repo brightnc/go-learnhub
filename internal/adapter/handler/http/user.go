@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/brightnc/go-learnhub/internal/adapter/handler/dto"
 	"github.com/brightnc/go-learnhub/internal/core/domain"
@@ -68,6 +69,7 @@ func (userHdl *UserHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "cannot login",
 		})
+		return
 	}
 	response := dto.LoginResponse{
 		Token: token,
@@ -75,7 +77,22 @@ func (userHdl *UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (userHdl *UserHandler) GetUserById(c *gin.Context) {
+func (userHdl *UserHandler) Logout(c *gin.Context) {
+	expireAt := c.MustGet("expireAt").(time.Time)
+	token := c.MustGet("token").(string)
+	err := userHdl.svc.Logout(token, expireAt)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "cannot logout",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "logout success",
+	})
+}
+
+func (userHdl *UserHandler) GetUserInfo(c *gin.Context) {
 	userId := c.MustGet("userId").(string)
 	result, err := userHdl.svc.GetUserById(userId)
 	if err != nil {

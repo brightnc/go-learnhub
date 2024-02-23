@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	redisRepository "github.com/brightnc/go-learnhub/internal/adapter/database/redis/repository"
 	"github.com/brightnc/go-learnhub/internal/core/domain"
 	"github.com/brightnc/go-learnhub/internal/core/port"
 	"github.com/brightnc/go-learnhub/internal/core/util"
@@ -13,12 +14,14 @@ import (
 )
 
 type UserService struct {
-	repo port.IUserRepository
+	repo   port.IUserRepository
+	blRepo *redisRepository.BlacklistRepository
 }
 
-func NewUserService(repo port.IUserRepository) *UserService {
+func NewUserService(repo port.IUserRepository, blRepo *redisRepository.BlacklistRepository) *UserService {
 	return &UserService{
-		repo: repo,
+		repo:   repo,
+		blRepo: blRepo,
 	}
 }
 
@@ -75,6 +78,13 @@ func (svc *UserService) Login(username string, password string) (string, error) 
 	}
 
 	return tokenString, nil
+}
+
+func (svc *UserService) Logout(token string, expire time.Time) error {
+	if err := svc.blRepo.AddToBlackList(token, expire); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (svc *UserService) GetUserById(id string) (*domain.User, error) {

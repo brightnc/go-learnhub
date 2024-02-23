@@ -20,10 +20,13 @@ func ServeREST() {
 	v1.POST("/register", userHdl.Register)
 	v1.POST("/login", userHdl.Login)
 
-	authorized := v1.Group("/auth")
-	authorized.Use(middleware.Auth())
-	authorized.GET("/mine", userHdl.GetUserById)
+	authorized := v1.Group("/")
+	authorized.Use(middleware.Auth(app.blRepo))
+	authorized.GET("/me", userHdl.GetUserInfo)
+	authorized.POST("/logout", userHdl.Logout)
 	authorized.POST("/content", contentHdl.CreateContent)
+	authorized.PATCH("/content/:id", contentHdl.UpdateContent)
+	authorized.DELETE("/content/:id", contentHdl.DeleteContent)
 
 	v1.GET("/content", contentHdl.ContentList)
 	v1.GET("/content/:id", contentHdl.GetContentById)

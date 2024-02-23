@@ -6,12 +6,13 @@ import (
 	"os"
 	"strings"
 
+	redisRepository "github.com/brightnc/go-learnhub/internal/adapter/database/redis/repository"
 	"github.com/brightnc/go-learnhub/internal/core/service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func Auth() gin.HandlerFunc {
+func Auth(bl *redisRepository.BlacklistRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorizationHeader := c.GetHeader("Authorization")
 		if authorizationHeader == "" {
@@ -27,6 +28,12 @@ func Auth() gin.HandlerFunc {
 		}
 
 		tokenString := tokenParts[1]
+		isBlToken := bl.IsInBlackList(tokenString)
+		if isBlToken {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		}
 		token, err := jwt.ParseWithClaims(tokenString, &service.MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
@@ -51,6 +58,8 @@ func Auth() gin.HandlerFunc {
 		}
 
 		c.Set("userId", claims.Id)
+		c.Set("expireAt", claims.ExpiresAt.Time)
+		c.Set("token", tokenString)
 
 		c.Next()
 	}

@@ -28,6 +28,11 @@ type ContentResponse struct {
 	DeletedAt    time.Time    `json:"deletedAt"`
 }
 
+type UpdateContentRequest struct {
+	Comment string `json:"comment"`
+	Rating  uint16 `json:"rating"`
+}
+
 func ToContentResponse(content *domain.Content) ContentResponse {
 	return ContentResponse{
 		ID:           content.ID,
