@@ -43,8 +43,18 @@ func (svc *ContentService) CreateContent(userId string, videoUrl string, comment
 	return result, nil
 }
 func (svc *ContentService) GetContents() ([]*domain.Content, error) {
-	return nil, nil
+	result, err := svc.repo.GetContents()
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 func (svc *ContentService) GetContentById(id string) (*domain.Content, error) {
-	return nil, nil
+	result, err := svc.repo.GetContentById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

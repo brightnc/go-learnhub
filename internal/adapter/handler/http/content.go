@@ -39,19 +39,39 @@ func (contentHdl *ContentHandler) CreateContent(c *gin.Context) {
 		return
 	}
 
-	response := dto.ContentResponse{
-		ID:           result.ID,
-		VideoTitle:   result.VideoTitle,
-		VideoUrl:     result.VideoUrl,
-		Comment:      result.Comment,
-		Rating:       result.Rating,
-		ThumbnailUrl: result.ThumbnailUrl,
-		CreatorName:  result.CreatorName,
-		CreatorUrl:   result.CreatorUrl,
-		UserID:       result.UserID,
-		CreatedAt:    result.CreatedAt,
-		UpdatedAt:    result.UpdatedAt,
-		DeletedAt:    result.DeletedAt.Time,
+	response := dto.ToContentResponse(result)
+	c.JSON(http.StatusOK, response)
+}
+
+func (contentHdl *ContentHandler) ContentList(c *gin.Context) {
+	result, err := contentHdl.svc.GetContents()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "cannot list content",
+		})
+		return
 	}
+
+	response := make([]dto.ContentResponse, len(result))
+	for i, content := range result {
+		response[i] = dto.ToContentResponse(content)
+	}
+
+	c.JSON(http.StatusOK, response)
+
+}
+
+func (contentHdl *ContentHandler) GetContentById(c *gin.Context) {
+	id := c.Param("id")
+
+	result, err := contentHdl.svc.GetContentById(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "wrong content id",
+		})
+		return
+	}
+	response := dto.ToContentResponse(result)
+
 	c.JSON(http.StatusOK, response)
 }

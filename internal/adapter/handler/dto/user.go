@@ -3,6 +3,7 @@ package dto
 import (
 	"time"
 
+	"github.com/brightnc/go-learnhub/internal/core/domain"
 	"github.com/google/uuid"
 )
 
@@ -37,4 +38,16 @@ type UserResponse struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	DeletedAt time.Time `json:"deletedAt"`
+}
+
+func ToUserResponse(user domain.User) UserResponse {
+	return UserResponse{
+		ID:        user.ID,
+		Name:      user.Name,
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		DeletedAt: user.DeletedAt.Time,
+	}
 }

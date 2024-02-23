@@ -25,5 +25,8 @@ func ServeREST() {
 	authorized.GET("/mine", userHdl.GetUserById)
 	authorized.POST("/content", contentHdl.CreateContent)
 
+	v1.GET("/content", contentHdl.ContentList)
+	v1.GET("/content/:id", contentHdl.GetContentById)
+
 	r.Run(":8000")
 }
