@@ -34,7 +34,6 @@ func (userHdl *UserHandler) Register(c *gin.Context) {
 		Name:     req.Name,
 		Username: req.Username,
 		Password: req.Password,
-		Email:    req.Email,
 	}
 
 	result, err := userHdl.svc.Register(&user)
@@ -49,7 +48,6 @@ func (userHdl *UserHandler) Register(c *gin.Context) {
 		ID:        result.ID,
 		Name:      result.Name,
 		Username:  result.Username,
-		Email:     result.Email,
 		CreatedAt: result.CreatedAt,
 	}
 	c.JSON(http.StatusCreated, response)
@@ -105,7 +103,6 @@ func (userHdl *UserHandler) GetUserInfo(c *gin.Context) {
 		ID:        result.ID,
 		Name:      result.Name,
 		Username:  result.Username,
-		Email:     result.Email,
 		CreatedAt: result.CreatedAt,
 		UpdatedAt: result.UpdatedAt,
 	}

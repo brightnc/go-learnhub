@@ -30,7 +30,6 @@ func (r *UserRepository) CreateUser(user *domain.User) (*domain.User, error) {
 		ID:        user.ID,
 		Name:      user.Name,
 		Username:  user.Username,
-		Email:     user.Email,
 		CreatedAt: user.CreatedAt,
 	}, nil
 }
@@ -46,7 +45,6 @@ func (r *UserRepository) GetUserByUsername(username string) (*domain.User, error
 		Name:      user.Name,
 		Username:  user.Username,
 		Password:  user.Password,
-		Email:     user.Email,
 		DeletedAt: user.DeletedAt,
 	}, nil
 }
@@ -61,7 +59,6 @@ func (r *UserRepository) GetUserById(id string) (*domain.User, error) {
 		ID:        user.ID,
 		Name:      user.Name,
 		Username:  user.Username,
-		Email:     user.Email,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt,

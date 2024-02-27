@@ -1,5 +1,23 @@
 version: "3.8"
 services:
+  api:
+    build: .
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+      - PORT=${PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=${REDIS_URL}
+    ports:
+      - 8000:8000
+    depends_on:
+      - pg-db
+      - redis-db
+    networks:
+      - app
   pg-db:
     image: postgres:16
     environment:
@@ -8,10 +26,16 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - app
 
   redis-db:
     image: redis:7.2.3
     ports:
       - 6379:6379
+    networks:
+      - app
 volumes:
   db-data:
+networks:
+  app:
